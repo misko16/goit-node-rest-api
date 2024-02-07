@@ -26,9 +26,9 @@ exports.getOneContact = async (req, res) => {
     }
     res.status(200).json(contact);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(400).json({
-      msg: "Not found",
+      message: "Server error",
     });
   }
 };
@@ -44,31 +44,37 @@ exports.deleteContact = async (req, res) => {
     }
     res.status(200).json(deleteContact);
   } catch (err) {
-    console.log(err);
-    res.status(404).json({
-      msg: "Not Found",
+    console.error(err);
+    res.status(500).json({
+      message: "Server error",
     });
   }
 };
 
 exports.createContact = async (req, res) => {
   try {
-    const { name, email, phone } = req.body;
-    const newContact = await contactsService.addContact(name, email, phone);
-    res.status(201).json(newContact);
-  } 
-  catch (err) {
-    console.log(err);
-    res.status(500).json({
-      msg: err.message,
-    });
+    const { error, value } = createContactSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.message });
+    }
+
+    const newContact = await contactsService.addContact(value);
+    return res.status(201).json(newContact);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
   }
 };
-
 
 exports.updateContact = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (Object.keys(req.body).length === 0) {
+      return res
+        .status(400)
+        .json({ message: "Body must have at least one field" });
+    }
+
     const { error } = updateContactSchema.validate(req.body);
 
     if (error) {
@@ -76,6 +82,7 @@ exports.updateContact = async (req, res) => {
     }
 
     const updatedContact = await contactsService.updateContact(id, req.body);
+
     if (!updatedContact) {
       return res.status(404).json({ message: "Not found" });
     }
