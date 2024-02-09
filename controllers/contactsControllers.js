@@ -59,17 +59,18 @@ exports.createContact = async (req, res) => {
       return res.status(400).json({ message: error.message });
     }
 
-    const newContact = await contactsService.addContact(value);
+    // Виправлення: передавати значення як окремі аргументи
+    const newContact = await contactsService.addContact(value.name, value.email, value.phone);
     return res.status(201).json(newContact);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
 };
 
+
 exports.updateContact = async (req, res) => {
   try {
     const { id } = req.params;
-
     if (Object.keys(req.body).length === 0) {
       return res
         .status(400)
@@ -77,17 +78,14 @@ exports.updateContact = async (req, res) => {
     }
 
     const { error } = updateContactSchema.validate(req.body);
-
     if (error) {
       return res.status(400).json({ message: error.message });
     }
 
     const updatedContact = await contactsService.updateContact(id, req.body);
-
     if (!updatedContact) {
       return res.status(404).json({ message: "Not found" });
     }
-
     res.status(200).json(updatedContact);
   } catch (err) {
     console.error(err);
