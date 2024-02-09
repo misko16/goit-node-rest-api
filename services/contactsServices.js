@@ -1,5 +1,6 @@
 const fs = require("fs/promises");
 const path = require("path");
+const { v4: uuidv4 } = require('uuid');
 
 const contactsPath = path.join(__dirname, "../db/contacts.json");
 let cachedContacts = null;
@@ -46,10 +47,12 @@ async function removeContact(contactId) {
 
 async function addContact(name, email, phone) {
   try {
-    const newContact = { id: new Date().toISOString(), name, email, phone };
+    // Замінюємо генерацію id через Date на UUID
+    const newContact = { id: uuidv4(), name, email, phone };
     const contacts = await listContacts();
     const updatedContacts = [...contacts, newContact];
     await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2));
+
     cachedContacts = updatedContacts;
     return newContact;
   } catch (error) {
