@@ -1,17 +1,5 @@
 [
   {
-    "id": "AeHIrLTr6JkxGE6SN-0Rw",
-    "name": "Allen Raymond",
-    "email": "nulla.ante@vestibul.co.uk",
-    "phone": "(992) 914-3792"
-  },
-  {
-    "id": "drsAJ4SHPYqZeG-83QTVW",
-    "name": "Kennedy Lane",
-    "email": "mattis.Cras@nonenimMauris.net",
-    "phone": "(542) 451-7038"
-  },
-  {
     "id": "05olLMgyVQdWRwgKfg5J6",
     "name": "Cyrus Jackson",
     "email": "nibh@semsempererat.com",
@@ -48,21 +36,17 @@
     "phone": "(748) 206-2688"
   },
   {
-    "id": 1705894290927,
+    "id": "1705894290927",
     "name": "Mango",
     "email": "mango@gmail.com",
     "phone": "322-22-22"
   },
   {
-    "id": "2024-02-06T23:41:28.899Z",
-    "name": "Mykhailo Hrynenko",
-    "email": "ivanov@example.com",
-    "phone": "123-456-7890"
-  },
-  {
-    "id": "2024-02-06T23:41:32.617Z",
-    "name": "Mykhailo Hrynenko",
-    "email": "ivanov@example.com",
-    "phone": "123-456-7890"
+    "id": "2024-02-09T00:17:07.634Z",
+    "name": {
+      "name": "Mykhailo Hrynenko",
+      "email": "ivanov@example.com",
+      "phone": "123-456-7890"
+    }
   }
 ]

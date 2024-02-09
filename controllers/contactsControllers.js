@@ -21,7 +21,7 @@ exports.getOneContact = async (req, res) => {
 
     if (!contact) {
       return res.status(404).json({
-        msg: "Not Found",
+        message: "Not Found",
       });
     }
     res.status(200).json(contact);
@@ -36,13 +36,13 @@ exports.getOneContact = async (req, res) => {
 exports.deleteContact = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleteContact = await contactsService.removeContact(id);
-    if (!deleteContact) {
-      res.status(404).json({
-        msg: "Not Found",
+    const deletedContact = await contactsService.removeContact(id);
+    if (!deletedContact) {
+      return res.status(404).json({  
+        message: "Not Found",
       });
     }
-    res.status(200).json(deleteContact);
+    res.status(200).json(deletedContact);
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -50,6 +50,7 @@ exports.deleteContact = async (req, res) => {
     });
   }
 };
+
 
 exports.createContact = async (req, res) => {
   try {
