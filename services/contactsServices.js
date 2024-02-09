@@ -28,12 +28,17 @@ async function getContactById(contactId) {
 async function removeContact(contactId) {
   try {
     const contacts = await listContacts();
-    const updatedContacts = contacts.filter(
-      (contact) => contact.id !== contactId
-    );
+    const index = contacts.findIndex((contact) => contact.id === contactId);
+
+    if (index === -1) {
+      return null;
+    }
+    const updatedContacts = contacts.filter((contact) => contact.id !== contactId);
+    
     await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2));
     cachedContacts = updatedContacts;
-    return updatedContacts;
+
+    return contacts[index];
   } catch (error) {
     throw new Error(error.message);
   }
@@ -54,7 +59,7 @@ async function addContact(name, email, phone) {
 
 async function updateContact(contactId, updateData) {
   const contacts = await listContacts();
-  const index = contacts.findIndex((contact = contact.id === contactId));
+  const index = contacts.findIndex((contact) => contact.id === contactId);
 
   if (index === -1) {
     return null;
