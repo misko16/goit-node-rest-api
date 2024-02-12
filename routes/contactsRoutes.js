@@ -1,17 +1,35 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const contactsController = require('../controllers/contactsControllers');
-const  validateBody  = require('../helpers/validateBody');
-const { createContactSchema, updateContactSchema } = require('../schemas/contactsSchemas');
+const contactsController = require("../controllers/contactsControllers");
+const validateBody = require("../helpers/validateBody");
+const {
+  createContactSchema,
+  updateContactSchema,
+} = require("../schemas/contactsSchemas");
 
-
+// They are bouth working
 router.get("/", contactsController.getAllContacts);
 router.get("/:id", contactsController.getOneContact);
-
-router.post("/", validateBody(createContactSchema), contactsController.createContact);
-
-router.put("/:id", validateBody(updateContactSchema), contactsController.updateContact);
-
+// Also working
+router.post(
+  "/",
+  validateBody(createContactSchema),
+  contactsController.createContact
+);
+//This is also working 
+router.put(
+  "/:id",
+  validateBody(updateContactSchema),
+  contactsController.updateContact
+);
+// Also working
 router.delete("/:id", contactsController.deleteContact);
+
+
+
+// TODO
+// Їбана проблема тут, воно сука не хоче відправляти нормально запит та говорить, що гляху не існує
+router.patch('/:id/favorite', contactsController.updateStatusContacts);
+
 
 module.exports = router;
