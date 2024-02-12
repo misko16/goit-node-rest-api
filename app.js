@@ -1,17 +1,31 @@
+require('dotenv').config({ path: './envs/.env' }); 
+
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
-
+const mongoose = require("mongoose");
 const contactsRouter = require("./routes/contactsRoutes");
+const { serverConfig } = require('./configs/serverConfig');
 
 const app = express();
+
+mongoose
+  .connect(serverConfig.mongoUrl)
+  .then(() => {
+    console.log("Database connection successful");
+  })
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
 
 app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
 app.use("/api/contacts", contactsRouter);
-//--------midlewars-----------
+
+//--------middleware-----------
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });
 });
@@ -21,7 +35,7 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-
-app.listen(3000, () => {
-  console.log("Server is running. Use our API on port: 3000");
+const PORT = serverConfig.port;
+app.listen(PORT, () => {
+  console.log(`Server is running. Use our API on port: ${PORT}`);
 });

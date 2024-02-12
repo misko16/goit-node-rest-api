@@ -1,12 +1,13 @@
-const contactsService = require("../services/contactsServices");
 const {
-  createContactSchema,
   updateContactSchema,
 } = require("../schemas/contactsSchemas");
+const { User } = require("../models/userModel");
+
+
 
 exports.getAllContacts = async (req, res) => {
   try {
-    const contacts = await contactsService.listContacts();
+    const contacts = await User.find();
     res.status(200).json(contacts);
   } catch (err) {
     console.error(err);
@@ -17,7 +18,7 @@ exports.getAllContacts = async (req, res) => {
 exports.getOneContact = async (req, res) => {
   try {
     const { id } = req.params;
-    const contact = await contactsService.getContactById(id);
+    const contact = await User.findById(id);
 
     if (!contact) {
       return res.status(404).json({
@@ -36,9 +37,9 @@ exports.getOneContact = async (req, res) => {
 exports.deleteContact = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedContact = await contactsService.removeContact(id);
+    const deletedContact = await User.findByIdAndDelete(id);
     if (!deletedContact) {
-      return res.status(404).json({  
+      return res.status(404).json({
         message: "Not Found",
       });
     }
@@ -51,22 +52,14 @@ exports.deleteContact = async (req, res) => {
   }
 };
 
-
 exports.createContact = async (req, res) => {
   try {
-    const { error, value } = createContactSchema.validate(req.body);
-    if (error) {
-      return res.status(400).json({ message: error.message });
-    }
-
-    // Виправлення: передавати значення як окремі аргументи
-    const newContact = await contactsService.addContact(value.name, value.email, value.phone);
-    return res.status(201).json(newContact);
+    const newUser = await User.create(req.body);
+    res.status(201).json({ msg: "successful", user: newUser });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
 };
-
 
 exports.updateContact = async (req, res) => {
   try {
@@ -82,7 +75,7 @@ exports.updateContact = async (req, res) => {
       return res.status(400).json({ message: error.message });
     }
 
-    const updatedContact = await contactsService.updateContact(id, req.body);
+    const updatedContact = await User.findByIdAndUpdate(id, req.body, {new: true});
     if (!updatedContact) {
       return res.status(404).json({ message: "Not found" });
     }
@@ -90,5 +83,25 @@ exports.updateContact = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.updateStatusContacts = async (req, res) => {
+  try {
+    const { id } = req.params; // Зміни з contactId на id
+    const { error } = updateFavoriteSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.message });
+    }
+
+    const updatedContact = await User.findByIdAndUpdate(id, { favorite: req.body.favorite }, { new: true });
+    if (!updatedContact) {
+      return res.status(404).json({ message: "Not found" });
+    }
+    
+    res.status(200).json(updatedContact);
+  } catch(err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" }); 
   }
 };
