@@ -88,8 +88,8 @@ exports.updateContact = async (req, res) => {
 
 exports.updateStatusContacts = async (req, res) => {
   try {
-    const { id } = req.params; // Зміни з contactId на id
-    const { error } = updateFavoriteSchema.validate(req.body);
+    const { id } = req.params; 
+    const { error } = updateContactSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ message: error.message });
     }
