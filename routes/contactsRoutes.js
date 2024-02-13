@@ -25,10 +25,7 @@ router.put(
 // Also working
 router.delete("/:id", contactsController.deleteContact);
 
-
-
-// TODO
-// Їбана проблема тут, воно сука не хоче відправляти нормально запит та говорить, що гляху не існує
+// Working
 router.patch('/:id/favorite', contactsController.updateStatusContacts);
 
 
