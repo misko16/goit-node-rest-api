@@ -10,7 +10,7 @@ const Joi = require('joi');
     name: Joi.string(),
     email: Joi.string().email(),
     phone: Joi.string(),
-    favorite: Joi.boolean(),
+    favorite: Joi.boolean().required(),
 });
 
 module.exports = {
