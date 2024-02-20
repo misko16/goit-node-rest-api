@@ -1,4 +1,4 @@
-require('dotenv').config({ path: './envs/.env' }); 
+require('dotenv').config({ path: './envs/.env.example' }); 
 
 const express = require("express");
 const morgan = require("morgan");
@@ -10,7 +10,7 @@ const { serverConfig } = require('./configs/serverConfig');
 const app = express();
 
 mongoose
-  .connect(serverConfig.mongoUrl)
+  .connect(serverConfig.dbPass)
   .then(() => {
     console.log("Database connection successful");
   })
