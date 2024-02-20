@@ -57,7 +57,7 @@ exports.deleteContact = async (req, res) => {
 exports.createContact = async (req, res) => {
   try {
     const newUser = await User.create(req.body);
-    res.status(201).json({ msg: "successful", user: newUser });
+    res.status(201).json(newUser);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -96,7 +96,7 @@ exports.updateContact = async (req, res) => {
 exports.updateStatusContacts = async (req, res) => {
   try {
     const { id } = req.params;
-    const { error } = updateContactSchema.validate(req.body);
+    const { error } = patchContactSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ message: error.message });
     }
