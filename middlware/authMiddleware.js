@@ -1,7 +1,7 @@
-const { HttpError } = require("../helpers/HttpError");
+const  HttpError  = require('../../helpers/HttpError');
 const { ctrlWrapper } = require("../decoder/ctrlWrapper");
 const jwt = require("jsonwebtoken");
-const { User } = require("../models/mongoosSchemas");
+const { User } = require("../schemas/JoiSchemas/usersSchema");
 const path = require("path");
 const configPath = path.join(__dirname, "..", ".env");
 require("dotenv").config({ path: configPath });

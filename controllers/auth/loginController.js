@@ -1,5 +1,5 @@
-const { User } = require("../../models/mongoosSchemas");
-const { HttpError } = require("../helpers/HttpError");
+const { User } = require("../../schemas/JoiSchemas/usersSchema");
+const  HttpError  = require('../../helpers/HttpError');
 const { ctrlWrapper } = require("../decoder/ctrlWrapper");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");

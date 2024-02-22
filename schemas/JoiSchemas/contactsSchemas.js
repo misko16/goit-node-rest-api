@@ -1,24 +1,24 @@
-const Joi = require('joi');
+const Joi = require("joi");
 
-const createContactSchema = Joi.object({
-    name: Joi.string().required(),
-    email: Joi.string().email().required(),
-    phone: Joi.string().required(), 
+const contactAddSchema = Joi.object({
+  name: Joi.string().required().messages({
+    "any.required": `missing required "name" field`,
+  }),
+  email: Joi.string().required().messages({
+    "any.required": `missing required "email" field`,
+  }),
+  phone: Joi.string().required().messages({
+    "any.required": `missing required "phone" field`,
+  }),
+  favorite: Joi.boolean().required().messages({
+    "any.required": `missing field favorite`,
+  }),
 });
 
-const updateContactSchema = Joi.object({
-    name: Joi.string(),
-    email: Joi.string().email(),
-    phone: Joi.string(),
-    favorite: Joi.boolean(),
+const contactUpdateFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required().messages({
+    "any.required": `missing field favorite`,
+  }),
 });
 
-const patchContactSchema = Joi.object({
-    favorite: Joi.boolean().required(),
-});
-
-module.exports = {
-    createContactSchema,
-    updateContactSchema,
-    patchContactSchema, 
-}
+module.exports = { contactAddSchema, contactUpdateFavoriteSchema };

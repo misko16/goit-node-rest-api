@@ -1,5 +1,5 @@
 const { Contact } = require("../../models/contactModels");
-const { ctrlWrapper } = require("../../decoder");
+const { ctrlWrapper } = require("../../decoder/ctrlWrapper");
 
 const getContactsList = async (req, res) => {
   const { _id: owner } = req.user;

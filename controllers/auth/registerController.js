@@ -1,5 +1,5 @@
 const { User } = require("../../models/userModel");
-const { HttpError } = require("../../helpers/HttpError");
+const  HttpError  = require('../../helpers/HttpError');
 const { ctrlWrapper } = require("../../decoder/ctrlWrapper");
 const bcrypt = require("bcryptjs");
 
