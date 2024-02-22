@@ -1,23 +1,50 @@
 const express = require("express");
-const router = express.Router();
-const contactsController = require("../controllers/contactsControllers");
-const validateBody = require("../helpers/validateBody");
-const {createContactSchema,updateContactSchema} = require("../schemas/contactsSchemas");
-const { registerRequest, loginRequest, logOutRequest, getCurrentUser } = require("../controllers/authControllers");
-const authMiddleware = require("../middlware/authMiddleware");
 
+const {
+  getContactsList,
+  getContactById,
+  addNewContact,
+  removeContactById,
+  updateContactById,
+  updateStatusContact,
+} = require("../controllers/contacts/index");
 
-router.get("/", authMiddleware, contactsController.getAllContacts);
-router.get("/:id", authMiddleware, contactsController.getOneContact);
-router.post("/", authMiddleware, validateBody(createContactSchema), contactsController.createContact);
-router.put("/:id", authMiddleware, validateBody(updateContactSchema), contactsController.updateContact);
-router.delete("/:id", authMiddleware, contactsController.deleteContact);
-router.patch('/:id/favorite', authMiddleware, contactsController.updateStatusContacts);
+const contactsRouter = express.Router();
 
-//NEW
-router.post('/users/register', registerRequest);
-router.post("/users/login", loginRequest);
-router.post('/users/logout', authMiddleware, logOutRequest);
-router.get('/users/current', authMiddleware, getCurrentUser);
+const { isEmptyBody, isValidId, authenticate } = require("../middlware/index");
+const { validateBody } = require("../decoder/validateBody");
+const {
+  contactAddSchema,
+  contactUpdateFavoriteSchema,
+} = require("../schemas/JoiSchemas/index");
 
-module.exports = router;
+const contactAddValidate = validateBody(contactAddSchema);
+const contactUpdateFavoriteValidate = validateBody(contactUpdateFavoriteSchema);
+
+contactsRouter.use(authenticate);
+
+contactsRouter.get("/", getContactsList);
+
+contactsRouter.get("/:id", isValidId, getContactById);
+
+contactsRouter.post("/", isEmptyBody, contactAddValidate, addNewContact);
+
+contactsRouter.delete("/:id", isValidId, removeContactById);
+
+contactsRouter.put(
+  "/:id",
+  isValidId,
+  isEmptyBody,
+  contactAddValidate,
+  updateContactById
+);
+
+contactsRouter.patch(
+  "/:id/favorite",
+  isValidId,
+  isEmptyBody,
+  contactUpdateFavoriteValidate,
+  updateStatusContact
+);
+
+module.exports = contactsRouter;

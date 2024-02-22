@@ -1,41 +1,44 @@
-require('dotenv').config({ path: './envs/.env.example' }); 
-
 const express = require("express");
-const morgan = require("morgan");
+const logger = require("morgan");
 const cors = require("cors");
+const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const contactsRouter = require("./routes/contactsRoutes");
-const { serverConfig } = require('./configs/serverConfig');
+const path = require("path");
+
+const { contactsRouter, authRouter } = require("./routes/index");
+
+const configPath = path.join(__dirname, "./envs/.env.example");
+dotenv.config({ path: configPath });
 
 const app = express();
+const { PORT, DB_HOST } = process.env;
 
 mongoose
-  .connect(serverConfig.dbPass)
+  .connect(DB_HOST)
   .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running. Use our API on port: ${PORT}`);
+    });
     console.log("Database connection successful");
   })
-  .catch((err) => {
-    console.error(err);
+  .catch((error) => {
+    console.log(error.message);
     process.exit(1);
   });
 
-app.use(morgan("tiny"));
+const formatsLogger = app.get("env") === "development" ? "dev" : "short";
+app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/users", authRouter);
 app.use("/api/contacts", contactsRouter);
 
-//--------middleware-----------
-app.use((_, res) => {
-  res.status(404).json({ message: "Route not found" });
+app.use((req, res) => {
+  res.status(404).json({ message: "Not found" });
 });
 
 app.use((err, req, res, next) => {
-  const { status = 500, message = "Server error" } = err;
-  res.status(status).json({ message });
+  res.status(err.status || 500).json({ message: err.message });
 });
 
-const PORT = serverConfig.port;
-app.listen(PORT, () => {
-  console.log(`Server is running. Use our API on port: ${PORT}`);
-});

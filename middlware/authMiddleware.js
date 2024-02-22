@@ -1,35 +1,33 @@
-const jwt = require('jsonwebtoken');
-const { User } = require('../models/userModel'); // Припустимо, ваша модель користувача знаходиться тут
+const  HttpError  = require('../../helpers/HttpError');
+const { ctrlWrapper } = require("../decoder/ctrlWrapper");
+const jwt = require("jsonwebtoken");
+const { User } = require("../schemas/JoiSchemas/usersSchema");
+const path = require("path");
+const configPath = path.join(__dirname, "..", ".env");
+require("dotenv").config({ path: configPath });
 
-const authMiddleware = async (req, res, next) => {
+const { JWT_SECRET } = process.env;
+
+const authenticate = async (req, res, next) => {
+  const { authorization } = req.headers;
+  const [bearer, token] = authorization.split(" ");
+
+  if (bearer !== "Bearer" || !token) {
+    throw HttpError(401);
+  }
+
   try {
-
-    const authorizationHeader = req.headers.authorization;
-    if (!authorizationHeader) {
-      return res.status(401).json({ message: 'Not authorized' });
+    const { id } = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(id);
+    if (!user || !user.token) {
+      throw HttpError(401, "Not authorized");
     }
-
-    const token = authorizationHeader.replace('Bearer ', '');
-
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); 
-
-    const user = await User.findById(decoded.id);
-
-    if (!user || token !== user.token) {
-      return res.status(401).json({ message: 'Not authorized' });
-    }
-
     req.user = user;
 
-    next(); 
+    next();
   } catch (error) {
-    if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({ message: 'Not authorized' });
-    }
-
-    res.status(500).json({ message: 'Server error' });
+    next(HttpError(401));
   }
 };
 
-module.exports = authMiddleware;
+module.exports = { authenticate: ctrlWrapper(authenticate) }
