@@ -16,7 +16,7 @@ router.post(
   validateBody(createContactSchema),
   contactsController.createContact
 );
-//This is also working 
+//This is also working
 router.put(
   "/:id",
   validateBody(updateContactSchema),
@@ -26,7 +26,6 @@ router.put(
 router.delete("/:id", contactsController.deleteContact);
 
 // Working
-router.patch('/:id/favorite', contactsController.updateStatusContacts);
-
+router.patch("/:id/favorite", contactsController.updateStatusContacts);
 
 module.exports = router;

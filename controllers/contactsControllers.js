@@ -1,4 +1,4 @@
-const { updateContactSchema } = require("../schemas/contactsSchemas");
+const { updateContactSchema, patchContactSchema } = require("../schemas/contactsSchemas");
 const { User } = require("../models/userModel");
 const mongoose = require("mongoose");
 
@@ -15,42 +15,34 @@ exports.getAllContacts = async (req, res) => {
 exports.getOneContact = async (req, res) => {
   try {
     const { id } = req.params;
-    const contact = await User.findById(id);
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid ID" });
+      return res.status(404).json({ message: "Invalid ID" });
     }
+    const contact = await User.findById(id);
     if (!contact) {
-      return res.status(404).json({
-        message: "Not Found",
-      });
+      return res.status(404).json({ message: "Not Found" });
     }
     res.status(200).json(contact);
   } catch (err) {
     console.error(err);
-    res.status(400).json({
-      message: "Server error",
-    });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
 exports.deleteContact = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedContact = await User.findByIdAndDelete(id);
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid ID" });
+      return res.status(404).json({ message: "Invalid ID" });
     }
+    const deletedContact = await User.findByIdAndDelete(id);
     if (!deletedContact) {
-      return res.status(404).json({
-        message: "Not Found",
-      });
+      return res.status(404).json({ message: "Not Found" });
     }
     res.status(200).json(deletedContact);
   } catch (err) {
     console.error(err);
-    res.status(500).json({
-      message: "Server error",
-    });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -66,23 +58,19 @@ exports.createContact = async (req, res) => {
 exports.updateContact = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ message: "Invalid ID" });
+    }
     if (Object.keys(req.body).length === 0) {
-      return res
-        .status(400)
-        .json({ message: "Body must have at least one field" });
+      return res.status(400).json({ message: "Body must have at least one field" });
     }
 
     const { error } = updateContactSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ message: error.message });
     }
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid ID" });
-    }
 
-    const updatedContact = await User.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const updatedContact = await User.findByIdAndUpdate(id, req.body, { new: true });
     if (!updatedContact) {
       return res.status(404).json({ message: "Not found" });
     }
@@ -96,14 +84,14 @@ exports.updateContact = async (req, res) => {
 exports.updateStatusContacts = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ message: "Invalid ID" });
+    }
     const { error } = patchContactSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ message: error.message });
     }
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid ID" });
-    }
     const updatedContact = await User.findByIdAndUpdate(
       id,
       { favorite: req.body.favorite },
