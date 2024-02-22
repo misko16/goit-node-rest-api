@@ -1,29 +1,37 @@
-const { model, Schema } = require("mongoose");
+const { Schema, model } = require("mongoose");
+const {handleSaveError} = require("../schemas/hooks/saveError");
+const {runValidatorsAtUpdate} = require("../schemas/hooks/runValidator")
 
-const userSchema = new Schema({
-  name: {
-    type: String,
-    required: [true, "Set name for contact"],
+const userSchema = new Schema(
+  {
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+    },
+    subscription: {
+      type: String,
+      enum: ["starter", "pro", "business"],
+      default: "starter",
+    },
+    token: {
+      type: String,
+      default: null,
+    },
   },
-  email: {
-    type: String,
-    unique: true,
-  },
-  phone: {
-    type: String,
-  },
-  favorite: {
-    type: Boolean,
-    default: false,
-  },
-  owner: {
-    type: Schema.Types.ObjectId,
-    ref: 'user',
+  {
+    versionKey: false,
   }
-});
+);
 
-const User = model("User", userSchema);
+userSchema.post("save", handleSaveError);
+userSchema.pre("findOneAndUpdate", runValidatorsAtUpdate);
+userSchema.post("findOneAndUpdate", handleSaveError);
 
-module.exports = {
-  User,
-};
+const User = model("user", userSchema);
+
+module.exports = { User };
