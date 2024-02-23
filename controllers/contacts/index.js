@@ -1,5 +1,5 @@
-const { getContactsList } = require("./listContacts");
-const { getContactById } = require("./findById");
+const { getContactsList } = require("./contactsList");
+const { getContactById } = require("./contactById");
 const { addNewContact } = require("./addContact");
 const { removeContactById } = require("./deleteContact");
 const { updateContactById } = require("./updateContact");

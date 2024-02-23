@@ -1,5 +1,5 @@
-const { Contact } = require("../../models/contactModels");
-const { ctrlWrapper } = require("../../decoder/ctrlWrapper");
+const { Contact } = require("../../models/mongoosSchemas");
+const { ctrlWrapper } = require("../../decorators");
 
 const addNewContact = async (req, res) => {
   const { _id: owner } = req.user;
