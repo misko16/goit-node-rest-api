@@ -1,6 +1,6 @@
-const { Contact } = require("../../models/contactModels");
-const  HttpError  = require('../../helpers/HttpError');
-const { ctrlWrapper } = require("../../decoder/ctrlWrapper");
+const { Contact } = require("../../models/mongoosSchemas");
+const { HttpError } = require("../../helpers");
+const { ctrlWrapper } = require("../../decorators");
 
 const removeContactById = async (req, res) => {
   const { id } = req.params;
