@@ -1,7 +1,6 @@
 const { Schema, model } = require("mongoose");
 const { handleSaveError, runValidatorsAtUpdate } = require("../hooks");
 
-//const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const userSchema = new Schema(
   {
     email: {
