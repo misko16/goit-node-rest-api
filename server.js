@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-// const { connect } = require("mongoose");
 const { app } = require("./app");
 const path = require("path");
 const configPath = path.join(__dirname, "./.env.example");
