@@ -7,20 +7,16 @@ const {
   logout,
   current,
   avatars,
-  verify,
-  resendVerifyEmail,
 } = require("../../controllers/auth");
 const { isEmptyBody, authenticate, upload } = require("../../middlewares");
 const { validateBody } = require("../../decorators");
 const {
   userRegisterSchema,
   userLoginSchema,
-  userEmailSchema,
 } = require("../../models/joiSchemas/userSchema");
 
 const userRegisterValidate = validateBody(userRegisterSchema);
 const userLoginValidate = validateBody(userLoginSchema);
-const userEmailValidate = validateBody(userEmailSchema);
 
 const authRouter = express.Router();
 
