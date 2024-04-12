@@ -2,6 +2,7 @@ const { User } = require("../../models/mongoosSchemas");
 const { ctrlWrapper } = require("../../decorators");
 const bcrypt = require("bcryptjs");
 const gravatar = require("gravatar");
+const jwt = require("jsonwebtoken"); // Додано імпорт jwt
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -23,6 +24,13 @@ const register = async (req, res) => {
     password: hashPassword,
     avatarURL,
   });
+
+  const payload = {
+    id: newUser._id,
+  };
+  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "23h" });
+
+  await User.findByIdAndUpdate(newUser._id, { token });
 
   res.status(201).json({
     user: {
