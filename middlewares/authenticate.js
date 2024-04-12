@@ -9,24 +9,32 @@ require("dotenv").config({ path: configPath });
 const { JWT_SECRET } = process.env;
 
 const authenticate = async (req, res, next) => {
-  const { authorization } = req.headers;
-  const [bearer, token] = authorization.split(" ");
-
-  if (bearer !== "Bearer" || !token) {
-    throw HttpError(401);
-  }
-
   try {
-    const { id } = jwt.verify(token, JWT_SECRET);
-    const user = await User.findById(id);
-    if (!user || !user.token) {
-      throw HttpError(401, "Not authorized");
-    }
-    req.user = user;
+    const { authorization } = req.headers;
 
+    if (!authorization || !authorization.startsWith("Bearer ")) {
+      // console.log('No Authorization header or Bearer token found')
+      throw  new HttpError(401, 'No Authorization header or Bearer token found');
+    }
+
+    const token = authorization.split(" ")[1];
+    if (!token) {
+      // console.log('No token found after Bearer')
+      throw  new HttpError(401, 'No token found after Bearer');
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user || user.token !== token) {
+      // console.log('Not authorized')
+      throw new HttpError(401,'Not authorized');
+    }
+
+    req.user = user;
     next();
   } catch (error) {
-    next(HttpError(401));
+    next(error);
   }
 };
 

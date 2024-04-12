@@ -1,26 +1,18 @@
 const { User } = require("../../models/mongoosSchemas");
-const { HttpError, sendemail } = require("../../helpers");
 const { ctrlWrapper } = require("../../decorators");
 const bcrypt = require("bcryptjs");
 const gravatar = require("gravatar");
-const { nanoid } = require("nanoid");
-const path = require("path");
-const configPath = path.join(__dirname, "..", "..", ".env");
-require("dotenv").config({ path: configPath });
-
-const { BASE_URL } = process.env;
+const jwt = require("jsonwebtoken"); // Додано імпорт jwt
 
 const register = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
   if (user) {
-    throw HttpError(409, `${email} in use`);
+    return res.status(409).json({ message: "Email in use" });
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
-  const verificationToken = nanoid();
-
   const avatarURL = gravatar.url(email, {
     protocol: "http",
     d: "mp",
@@ -31,16 +23,14 @@ const register = async (req, res) => {
     ...req.body,
     password: hashPassword,
     avatarURL,
-    verificationToken,
   });
 
-  const verifyEmail = {
-    to: email,
-    subject: "Verify email",
-    html: `<a target="blank" href="${BASE_URL}/api/users/verify/${verificationToken}">Click to verify email</a>`,
+  const payload = {
+    id: newUser._id,
   };
+  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "23h" });
 
-  await sendemail(verifyEmail);
+  await User.findByIdAndUpdate(newUser._id, { token });
 
   res.status(201).json({
     user: {

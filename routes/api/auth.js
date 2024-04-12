@@ -1,3 +1,5 @@
+// authRouter.js
+
 const express = require("express");
 const {
   register,
@@ -29,11 +31,13 @@ authRouter.post(
   userRegisterValidate,
   register
 );
-authRouter.get("/verify/:verificationToken", verify);
-authRouter.post("/verify", userEmailValidate, resendVerifyEmail);
+
 authRouter.post("/login", isEmptyBody, userLoginValidate, login);
+
 authRouter.post("/logout", authenticate, logout);
+
 authRouter.get("/current", authenticate, current);
+
 authRouter.patch("/avatars", upload.single("avatarURL"), authenticate, avatars);
 
 module.exports = authRouter;
