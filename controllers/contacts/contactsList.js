@@ -6,18 +6,13 @@ const getContactsList = async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
   const skip = (page - 1) * limit;
 
-  const list = await Contact.find({ owner }, "-__v", {
+  const contacts = await Contact.find({ owner }, "-__v", {
     skip,
     limit,
   }).populate("owner", "email");
 
-  res.status(200);
-  res.json({
-    code: 200,
-    message: "Success",
-    quantity: list.length,
-    data: list,
-  });
+  res.status(200).json(contacts);  // Змінено тут
 };
+
 
 module.exports = { getContactsList: ctrlWrapper(getContactsList) };
