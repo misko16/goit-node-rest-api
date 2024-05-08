@@ -13,8 +13,7 @@ const updateStatusContact = async (req, res) => {
     throw HttpError(404, `Not found`);
   }
 
-  res.status(200);
-  res.json({ code: 200, message: "Success", data: contact });
+  res.status(200).json(contact);
 };
 
 module.exports = { updateStatusContact: ctrlWrapper(updateStatusContact) };

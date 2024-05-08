@@ -10,8 +10,7 @@ const removeContactById = async (req, res) => {
   if (!result) {
     throw HttpError(404, `Not found`);
   }
-
-  res.json({ code: 200, message: "contact deleted" });
+  res.status(200).json("contact deleted")
 };
 
 module.exports = { removeContactById: ctrlWrapper(removeContactById) };
