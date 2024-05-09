@@ -4,7 +4,7 @@ const userRegisterSchema = Joi.object({
   email: Joi.string().required(),
   password: Joi.string().required(),
   subscription: Joi.string().valid(...["starter", "pro", "business"]),
-  token: Joi.string(),
+  // видалив токен
 });
 
 const userLoginSchema = Joi.object({
