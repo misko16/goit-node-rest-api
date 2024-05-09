@@ -11,7 +11,7 @@ const {
 
 const contactsRouter = express.Router();
 
-const { isEmptyBody, isValidId, authenticate } = require("../../middlewares");
+const {  isValidId, authenticate } = require("../../middlewares");
 const { validateBody } = require("../../decorators");
 const {
   contactAddSchema,
@@ -27,14 +27,13 @@ contactsRouter.get("/", getContactsList);
 
 contactsRouter.get("/:id", isValidId, getContactById);
 
-contactsRouter.post("/", isEmptyBody, contactAddValidate, addNewContact);
+contactsRouter.post("/", contactAddValidate, addNewContact);
 
 contactsRouter.delete("/:id", isValidId, removeContactById);
 
 contactsRouter.put(
   "/:id",
   isValidId,
-  isEmptyBody,
   contactAddValidate,
   updateContactById
 );
@@ -42,7 +41,6 @@ contactsRouter.put(
 contactsRouter.patch(
   "/:id/favorite",
   isValidId,
-  isEmptyBody,
   contactUpdateFavoriteValidate,
   updateStatusContact
 );
