@@ -22,7 +22,6 @@ const authenticate = async (req, res, next) => {
     const { id } = jwt.verify(token, JWT_SECRET);
     const user = await User.findById(id);
 
-    // Додав перевірку, якщо токен не збігається з тим що в базі даних
     if (!user || !user.token || user.token !== token) { 
       throw HttpError(401, "Not authorized");
     }
@@ -33,5 +32,4 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-// Врапер прибрано
 module.exports = { authenticate };
