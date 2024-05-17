@@ -28,7 +28,6 @@ const login = async (req, res, next) => {
     };
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
 
-    // Збереження токена в базі даних користувача
     user.token = token;
     await user.save();
 
