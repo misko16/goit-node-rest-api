@@ -20,7 +20,7 @@ const authRouter = express.Router();
 authRouter.post(
   "/register",
   userRegisterValidate,
-  upload.single("avatarUrl"),
+  upload.single("avatarURL"),
   register
 );
 authRouter.post("/login", userLoginValidate, login);

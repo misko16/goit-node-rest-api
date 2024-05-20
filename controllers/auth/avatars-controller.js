@@ -2,13 +2,14 @@ const { ctrlWrapper } = require("../../decorators");
 const { User } = require("../../models/mongoosSchemas");
 const { HttpError } = require("../../helpers");
 const Jimp = require("jimp");
-const gravatar = require("gravatar");
+const path = require("path");
+const fs = require("fs/promises");
 
 const avatars = async (req, res) => {
   const { file, user } = req;
 
   if (!user) {
-    throw HttpError(401);
+    throw HttpError(401, "Not authorized");
   }
 
   if (!file) {
@@ -17,19 +18,20 @@ const avatars = async (req, res) => {
 
   const image = await Jimp.read(file.path);
   image.resize(250, 250);
-  const avatarURL = gravatar.url(user.email, {
-    protocol: "http",
-    d: "mp",
-  });
 
-  await User.findByIdAndUpdate(req.user._id, { avatarURL: avatarURL });
+  const avatarName = `${user._id}_${Date.now()}_${file.originalname}`;
+  const avatarPath = path.join(__dirname, "../../public/avatars", avatarName);
+
+  await image.writeAsync(avatarPath);
+  await fs.unlink(file.path); 
+
+  const avatarURL = `/avatars/${avatarName}`;
+
+  await User.findByIdAndUpdate(user._id, { avatarURL });
 
   res.status(200).json({
     avatarURL,
   });
 };
-
-// TODO  написано від фонаря, зробити правильні помилки(якщо такі є)
-
 
 module.exports = { avatars: ctrlWrapper(avatars) };
