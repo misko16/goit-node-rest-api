@@ -9,6 +9,4 @@ const current = async (req, res) => {
   });
 };
 
-module.exports = {
-  current: ctrlWrapper(current),
-};
+module.exports = ctrlWrapper(current);

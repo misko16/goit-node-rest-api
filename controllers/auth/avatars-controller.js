@@ -31,4 +31,5 @@ const avatars = async (req, res) => {
   });
 };
 
-module.exports = { avatars: ctrlWrapper(avatars) };
+
+module.exports = ctrlWrapper(avatars);
