@@ -12,7 +12,7 @@ const {
 const contactsRouter = express.Router();
 
 const {  isValidId, authenticate } = require("../../middlewares");
-const { validateBody } = require("../../decorators");
+const { validateBody } = require("../../decorators/index");
 const {
   contactAddSchema,
   contactUpdateFavoriteSchema,

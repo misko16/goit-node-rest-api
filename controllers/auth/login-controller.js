@@ -17,6 +17,11 @@ const login = async (req, res, next) => {
       return res.status(401).json({ message: "Email or password is wrong" });
     }
 
+    // TODO виправити ситуацію з помилками
+    if(!user.verify){
+      throw res.status(404).json({message: "you are not verify your email"});
+    }
+
     const passwordCompare = await bcrypt.compare(password, user.password);
 
     if (!passwordCompare) {
@@ -44,6 +49,4 @@ const login = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  login: ctrlWrapper(login),
-};
+module.exports = ctrlWrapper(login);

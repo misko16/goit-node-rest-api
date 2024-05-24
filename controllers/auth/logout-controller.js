@@ -9,6 +9,4 @@ const logout = async (req, res) => {
   });
 };
 
-module.exports = {
-  logout: ctrlWrapper(logout),
-};
+module.exports = ctrlWrapper(logout);

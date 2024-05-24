@@ -5,9 +5,10 @@ const {
   logout,
   current,
   avatars,
+  verify,
 } = require("../../controllers/auth");
 const { authenticate, upload } = require("../../middlewares");
-const { validateBody } = require("../../decorators");
+const { validateBody } = require("../../decorators/index");
 const {
   userRegisterSchema,
   userLoginSchema,
@@ -15,14 +16,17 @@ const {
 
 const userRegisterValidate = validateBody(userRegisterSchema);
 const userLoginValidate = validateBody(userLoginSchema);
+
 const authRouter = express.Router();
+
 
 authRouter.post(
   "/register",
-  userRegisterValidate,
   upload.single("avatarURL"),
+  userRegisterValidate,
   register
 );
+authRouter.get("/verify/:verificationToken", verify);
 authRouter.post("/login", userLoginValidate, login);
 authRouter.post("/logout", authenticate, logout);
 authRouter.get("/current", authenticate, current);
