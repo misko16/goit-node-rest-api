@@ -19,7 +19,6 @@ const userLoginValidate = validateBody(userLoginSchema);
 
 const authRouter = express.Router();
 
-
 authRouter.post(
   "/register",
   upload.single("avatarURL"),

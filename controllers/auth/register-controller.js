@@ -19,7 +19,7 @@ const register = async (req, res, next) => {
 
     const hashPassword = await bcrypt.hash(password, 10);
     const avatarTypes = ["identicon", "monsterid", "wavatar"];
-    const verificationToken = nanoid();
+    const verificationToken = nanoid(); 
 
     const randomType = avatarTypes[Math.floor(Math.random() * avatarTypes.length)];
 
@@ -30,24 +30,30 @@ const register = async (req, res, next) => {
     });
 
     const newUser = await User.create({
-      ...req.body,
+      email,
       password: hashPassword,
       avatarURL,
-      verificationToken,
+      verificationToken, 
+      subscription: 'starter',
+      token: null,
+      verify: false,
     });
+
+    console.log("New user created with verificationToken:", verificationToken);  
+    console.log("New user created:", newUser);  
 
     const verifyEmail = {
       to: email,
       subject: "Verify email",
       html: `<p>Hello!</p>
-           <p>This is a test email to verify the email sending functionality.</p>
-           <p>Please click the button below to verify your email address:</p>
-           <p><a href="${BASE_URL}/api/auth/verify/${verificationToken}" 
-                 style="display:inline-block; padding:10px 20px; font-size:16px; color:#ffffff; background-color:#007bff; text-align:center; text-decoration:none; border-radius:5px;">
-               Verify Email Address
-           </a></p>
-           <p>Thank you!</p>
-           <p>Best regards,<br>Misko</p>`,
+             <p>This is a test email to verify the email sending functionality.</p>
+             <p>Please click the button below to verify your email address:</p>
+             <p><a href="${BASE_URL}/api/users/verify/${verificationToken}" 
+                   style="display:inline-block; padding:10px 20px; font-size:16px; color:#ffffff; background-color:#007bff; text-align:center; text-decoration:none; border-radius:5px;">
+                 Verify Email Address
+             </a></p>
+             <p>Thank you!</p>
+             <p>Best regards,<br>Misko</p>`,
     };
 
     await sendEmail(verifyEmail);
@@ -56,7 +62,7 @@ const register = async (req, res, next) => {
       user: {
         email: newUser.email,
         subscription: newUser.subscription,
-        avatarURL,
+        avatarURL: newUser.avatarURL,
       },
     });
   } catch (error) {
