@@ -13,7 +13,7 @@ const register = async (req, res, next) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (user) {
+    if (!user) {
       throw HttpError(409, "This email is already in use");
     }
 
